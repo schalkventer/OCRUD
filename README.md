@@ -4,9 +4,7 @@
 
 Can be used for a range of purposes, all the way from merely facilitating optimistic UI updates to creating a full offline-first app. Decoupled from both UI and data-fetching concerns, therefore plays nice with almost all frameworks and libraries.
 
-[React Demo example](#)
-
-React Demo code:
+React Example ([live demo](#)):
 
 ```jsx
 import { v4 as createId } from 'uuid'
