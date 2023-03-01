@@ -157,13 +157,13 @@ graph TD
 
 O[Operation];
 C[IndexedDB Cache];
-A[Django API];
+A[HTTP API];
 N[Returns null];
 F[Returns initial revert state and function to clear cache];
 
 O -- Updates cache immediately --> C;
 C -- Immediately returns provided array with relevant changes --> O;
-C -- Sends to matching resolver that talks to the Django API --> A;
+C -- Sends to matching resolver that talks to the HTTP API --> A;
 
 A -. Success .-> N;
 A -. Fails .-> F;
@@ -182,17 +182,17 @@ These concerns are can briefly be described as follows:
 
 The simplist case can be explained as follows:
 
-- If you pass an array of string ID values it will merely find matches for those items in the cache and return them. It will call the `read` resolver in the background to ensure the Django API matches what got returned by the cache.
+- If you pass an array of string ID values it will merely find matches for those items in the cache and return them. It will call the `read` resolver in the background to ensure the HTTP API matches what got returned by the cache.
 - If it matches what is in the cache then nothing will be done.
 - If it does not match what is in the cache it will return an array of the updated values returned from the Model (while updating the cache)
-- If it does not find matches for all IDs in the cache it attempt to fetch directly from the Django API (updating the cache on response), which means that it will take longer than a cached response.
+- If it does not find matches for all IDs in the cache it attempt to fetch directly from the HTTP API (updating the cache on response), which means that it will take longer than a cached response.
 
 ```mermaid
 graph TD;
 
 O[Operation as Array of ID]
 C[IndexedDB Cache]
-D[Django API]
+D[HTTP API]
 R[Returns Cache Array]
 A[Returns from API Items]
 E[Returns function to clear, retry or revert]
@@ -208,7 +208,7 @@ D -- Fail --> E
 
 ### Payload Object
 
-However, the specific required ID values are not always know. If the actual items to be shown (for example in filtering, searching or sorting) is calculated by the Django API then an payload object is passed (to be interpreted by the `read` resolver). This specific object is convered into a string hash (note the order of properties), and the matching Item ID values are saved in the cache alongside this hash. 
+However, the specific required ID values are not always know. If the actual items to be shown (for example in filtering, searching or sorting) is calculated by the HTTP API then an payload object is passed (to be interpreted by the `read` resolver). This specific object is convered into a string hash (note the order of properties), and the matching Item ID values are saved in the cache alongside this hash. 
 
 These ID values will then be used when the same payload is supplied again. Once the payload returns an array of ID values, the same process as above is followed. However with the exception that background updating of the cache is not run again since it will be fired by the payload object itself already.
 
